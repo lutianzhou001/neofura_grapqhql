@@ -1,0 +1,32 @@
+# GraphQL schema example
+#
+# https://gqlgen.com/getting-started/
+
+type Block {
+  _id: ID!
+  header: Identity
+  size: Int
+  hash: String
+  version: Int
+  prevhash: String
+  merkelroot: String
+  timestamp: Int
+  index: Int
+  primary: Int
+  nestConsensus: String
+  witnesses: [Witness]
+}
+
+type Identity {
+  ID: ID!
+}
+
+type Witness {
+  invocation: String
+  verification: String
+}
+
+type Query {
+  blocks: [Block]
+  lastBlock: Block
+}
