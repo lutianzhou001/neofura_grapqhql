@@ -2,6 +2,17 @@
 
 package model
 
+type Asset struct {
+	ID                string    `json:"_id"`
+	Hash              *string   `json:"hash"`
+	Firsttransfertime *int      `json:"firsttransfertime"`
+	Tokenname         *string   `json:"tokenname"`
+	Decimals          *int      `json:"decimals"`
+	Symbol            *string   `json:"symbol"`
+	TotalSupply       *string   `json:"totalSupply"`
+	Contract          *Identity `json:"contract"`
+}
+
 type Block struct {
 	ID            string     `json:"_id"`
 	Header        *Identity  `json:"header"`
@@ -17,8 +28,138 @@ type Block struct {
 	Witnesses     []*Witness `json:"witnesses"`
 }
 
+type Candidate struct {
+	ID               string  `json:"_id"`
+	Candidate        *string `json:"candidate"`
+	VotesOfCandidate *string `json:"votesOfCandidate"`
+}
+
+type Header struct {
+	ID            string     `json:"_id"`
+	Primaryindex  *int       `json:"primaryindex"`
+	Version       *int       `json:"version"`
+	Prevhash      *string    `json:"prevhash"`
+	Merkleroot    *string    `json:"merkleroot"`
+	Timestamp     *int       `json:"timestamp"`
+	Index         *int       `json:"index"`
+	NextConsensus *string    `json:"nextConsensus"`
+	Witness       []*Witness `json:"witness"`
+	Hash          *string    `json:"hash"`
+	Size          *int       `json:"size"`
+}
+
 type Identity struct {
 	ID string `json:"ID"`
+}
+
+type Nep11TransferNotification struct {
+	ID          string  `json:"_id"`
+	Txid        *string `json:"txid"`
+	Blockhash   *string `json:"blockhash"`
+	Contract    *string `json:"contract"`
+	TokenID     *string `json:"tokenId"`
+	From        *string `json:"from"`
+	To          *string `json:"to"`
+	Value       *int    `json:"value"`
+	Frombalance *int    `json:"frombalance"`
+	Tobalance   *int    `json:"tobalance"`
+}
+
+type Notification struct {
+	ID        string    `json:"_id"`
+	Txid      *string   `json:"txid"`
+	Index     *int      `json:"index"`
+	BlockHash *string   `json:"blockHash"`
+	Contract  *string   `json:"contract"`
+	Eventname *string   `json:"eventname"`
+	State     *State    `json:"state"`
+	Execution *Identity `json:"execution"`
+	Vmstate   *string   `json:"vmstate"`
+}
+
+type Params struct {
+	Limit *int  `json:"Limit"`
+	Skip  *int  `json:"Skip"`
+	Sort  *Sort `json:"Sort"`
+}
+
+type ScCall struct {
+	ID              string    `json:"_id"`
+	Txid            *string   `json:"txid"`
+	OriginSender    *string   `json:"originSender"`
+	ContractHash    *string   `json:"contractHash"`
+	Method          *string   `json:"method"`
+	CallFlags       *string   `json:"callFlags"`
+	HexStringParams []*string `json:"hexStringParams"`
+}
+
+type ScVoteCall struct {
+	ID              string  `json:"_id"`
+	BlockNumber     *int    `json:"blockNumber"`
+	Txid            *string `json:"txid"`
+	Voter           *string `json:"voter"`
+	CandidatePubKey *string `json:"candidatePubKey"`
+	Candidate       *string `json:"candidate"`
+}
+
+type Signer struct {
+	Account *string `json:"account"`
+	Scopes  *string `json:"scopes"`
+}
+
+type Sort struct {
+	Key   *string `json:"Key"`
+	Value *int    `json:"Value"`
+}
+
+type State struct {
+	Type  *string  `json:"type"`
+	Value []*Value `json:"value"`
+}
+
+type Transaction struct {
+	ID               string     `json:"_id"`
+	Hash             *string    `json:"hash"`
+	Size             *int       `json:"size"`
+	Version          *int       `json:"version"`
+	Nonce            *int       `json:"nonce"`
+	Sender           *string    `json:"sender"`
+	Sysfee           *int       `json:"sysfee"`
+	Netfee           *int       `json:"netfee"`
+	VailidUntilBlock *int       `json:"vailidUntilBlock"`
+	Signers          []*Signer  `json:"signers"`
+	Script           *string    `json:"script"`
+	Witnesses        []*Witness `json:"witnesses"`
+	BlockHash        *string    `json:"blockHash"`
+	BlockTime        *int       `json:"blockTime"`
+}
+
+type TransferNotification struct {
+	ID          string  `json:"_id"`
+	Txid        *string `json:"txid"`
+	Blockhash   *string `json:"blockhash"`
+	Contract    *string `json:"contract"`
+	From        *string `json:"from"`
+	To          *string `json:"to"`
+	Value       *string `json:"value"`
+	Frombalance *string `json:"frombalance"`
+	Tobalance   *string `json:"tobalance"`
+}
+
+type Value struct {
+	Type  *string `json:"type"`
+	Value *string `json:"value"`
+}
+
+type Vote struct {
+	ID              string  `json:"_id"`
+	Txid            *string `json:"txid"`
+	BlockNumber     *int    `json:"blockNumber"`
+	Voter           *string `json:"voter"`
+	Candidate       *string `json:"candidate"`
+	CandidatePubKey *string `json:"candidatePubKey"`
+	BalanceOfVoter  *string `json:"balanceOfVoter"`
+	Trigger         *string `json:"trigger"`
 }
 
 type Witness struct {

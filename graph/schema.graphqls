@@ -2,6 +2,63 @@
 #
 # https://gqlgen.com/getting-started/
 
+input Params {
+  Limit: Int
+  Skip: Int
+  Sort: Sort
+}
+
+input Sort {
+  Key: String
+  Value: Int
+}
+
+type Query {
+  blockByBlockHash(blockhash: String): Block
+
+  nep11TransferNotificationsByAddress(address: String): [Nep11TransferNotification]
+  nep11TransferNotificationByTransactionHash(transactionhash: String): Nep11TransferNotification
+
+  scCallsByContractHash(contracthash: String): [ScCall]
+  scCallsByContractHashAddress(contracthash: String, address:String): [ScCall]
+
+  scVoteCallsByContractHash(contracthash: String): [ScVoteCall]
+  scVoteCallsByVoterAdresss(voteraddress: String): [ScVoteCall]
+  scVoteCallsByCandidateAddress(candidateaddress: String): [ScVoteCall]
+
+  scVoteCall: ScVoteCall
+
+  votersByCandidateAddress(candidateaddress: String):[Vote]
+
+  votesByCandidateAddress(candidateaddress: String): Int
+
+  transactionsByAddress(address: String): [Transaction]
+  transactionsByBlockHash(address: String): [Transaction]
+  transactionsByBlockHeight(height: Int): [Transaction]
+  transactionsBySender(address: String): [Transaction]
+  transactionByTransactionHash(transactionhash:String):Transaction
+
+  transaction: Transaction
+
+  transferNotificationsByAddress(address: String): [TransferNotification]
+  transferNotificationsByContractHash(contracthash: String): [TransferNotification]
+  transferNotificationByTransactionHash(transactionhash: String): TransferNotification
+
+  transferNotification: TransferNotification
+
+  votes: [Vote]
+  vote: Vote
+  candidates: [Candidate]
+  candidate: Candidate
+  assets: [Asset]
+  asset: Asset
+  headers: [Header]
+  header: Header
+}
+
+
+# block
+
 type Block {
   _id: ID!
   header: Identity
@@ -26,7 +83,154 @@ type Witness {
   verification: String
 }
 
-type Query {
-  blocks: [Block]
-  lastBlock: Block
+# nep11transfernotification
+
+type Nep11TransferNotification {
+  _id: ID!
+  txid: String
+  blockhash: String
+  contract: String
+  tokenId: String
+  from: String
+  to: String
+  value: Int
+  frombalance: Int
+  tobalance: Int
 }
+
+# notification
+
+type Notification {
+  _id: ID!
+  txid: String
+  index: Int
+  blockHash: String
+  contract: String
+  eventname: String
+  state: State
+  execution: Identity
+  vmstate: String
+}
+
+type State {
+  type: String
+  value: [Value]
+}
+
+type Value {
+  type: String
+  value: String
+}
+
+# sccall
+
+type ScCall {
+  _id: ID!
+  txid: String
+  originSender: String
+  contractHash: String
+  method: String
+  callFlags: String
+  hexStringParams: [String]
+}
+
+# scvotecalls
+type ScVoteCall {
+  _id: ID!
+  blockNumber: Int
+  txid: String
+  voter: String
+  candidatePubKey:String
+  candidate: String
+}
+
+# transaction
+
+type Transaction {
+  _id: ID!
+  hash: String
+  size: Int
+  version: Int
+  nonce: Int
+  sender: String
+  sysfee: Int
+  netfee: Int
+  vailidUntilBlock: Int
+  signers: [Signer]
+  script: String
+  witnesses: [Witness]
+  blockHash: String
+  blockTime: Int
+}
+
+type Signer{
+   account : String
+   scopes: String
+}
+
+# transfernotification
+
+type TransferNotification {
+  _id : ID!
+  txid: String
+  blockhash: String
+  contract: String
+  from: String
+  to: String
+  value: String
+  frombalance: String
+  tobalance: String
+}
+
+# vote
+type Vote {
+  _id: ID!
+  txid: String
+  blockNumber: Int
+  voter: String
+  candidate: String
+  candidatePubKey: String
+  balanceOfVoter: String
+  trigger: String
+}
+
+# candidate
+type Candidate {
+  _id : ID!
+  candidate: String
+  votesOfCandidate: String
+}
+
+# asset
+type Asset {
+  _id: ID!
+  hash: String
+  firsttransfertime: Int
+  tokenname: String
+  decimals: Int
+  symbol: String
+  totalSupply: String
+  contract: Identity
+}
+
+# header
+type Header {
+  _id : ID!
+  primaryindex: Int
+  version: Int
+  prevhash: String
+  merkleroot: String
+  timestamp: Int
+  index: Int
+  nextConsensus: String
+  witness: [Witness]
+  hash: String
+  size: Int
+}
+
+
+
+
+
+
+
