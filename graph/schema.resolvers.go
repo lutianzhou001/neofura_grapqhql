@@ -16,27 +16,23 @@ func (r *queryResolver) BlockByBlockHash(ctx context.Context, blockhash *string)
 	return blockRepository.BlockByBlockHash(blockhash)
 }
 
-func (r *queryResolver) Nep11TransfersNotificationsByAddress(ctx context.Context, address *string) ([]*model.Nep11TransferNotification, error) {
-	return nep11TransferNotificationRepository.Nep11TransfersNotificationsByAddress(address)
+func (r *queryResolver) Nep11TransferNotificationsByAddress(ctx context.Context, address *string) ([]*model.Nep11TransferNotification, error) {
+	panic(fmt.Errorf("not implemented"))
 }
 
 func (r *queryResolver) Nep11TransferNotificationByTransactionHash(ctx context.Context, transactionhash *string) (*model.Nep11TransferNotification, error) {
 	return nep11TransferNotificationRepository.Nep11TransferNotificationByTransactionHash(transactionhash)
 }
 
-func (r *queryResolver) ScCallsByContractHash(ctx context.Context, contracthash *string) ([]*model.ScCall, error) {
-	panic(fmt.Errorf("not implemented"))
-}
-
 func (r *queryResolver) ScCallsByContractHashAddress(ctx context.Context, contracthash *string, address *string) ([]*model.ScCall, error) {
+	return scCallRepository.ScCallsByContractHashAddress(contracthash, address)
+}
+
+func (r *queryResolver) ScVoteCallByTransactionHash(ctx context.Context, transactionhash *string) ([]*model.ScVoteCall, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *queryResolver) ScVoteCallsByContractHash(ctx context.Context, contracthash *string) ([]*model.ScVoteCall, error) {
-	panic(fmt.Errorf("not implemented"))
-}
-
-func (r *queryResolver) ScVoteCallsByVoterAdresss(ctx context.Context, voteraddress *string) ([]*model.ScVoteCall, error) {
+func (r *queryResolver) ScVoteCallsByVoterAddress(ctx context.Context, voteraddress *string) ([]*model.ScVoteCall, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
@@ -139,9 +135,10 @@ type queryResolver struct{ *Resolver }
 //  - When renaming or deleting a resolver the old code will be put in here. You can safely delete
 //    it when you're done.
 //  - You have helper methods in this file. Move them out to keep these resolver files clean.
-
 var (
-	blockRepository repository.BlockRepository = repository.NewBlockRepository()
+	blockRepository                     repository.BlockRepository                     = repository.NewBlockRepository()
 	nep11TransferNotificationRepository repository.Nep11TransferNotificationRepository = repository.NewNep11TransferNotificationRepository()
+	scCallRepository                    repository.ScCallRepository                    = repository.NewScCallRepository()
+	scVoteRepository                    repository.ScVoteCallRepository                = repository.NewScVoteCallRepository()
 	//assetRepository repository.AssetRepository = repository.NewAssetRepository()
 )

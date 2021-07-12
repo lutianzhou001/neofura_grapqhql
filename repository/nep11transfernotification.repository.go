@@ -6,14 +6,26 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-func (db *database) Nep11TransfersNotificationsByAddress(address *string) ([]*model.Block, error) {
-	var result *model.Block
+func (db *database) Nep11TransfersNotificationsByAddress(address *string) ([]*model.Nep11TransferNotification, error) {
+	var results []*model.Nep11TransferNotification
 	collection := getCollection(db)
-	err := collection.FindOne(context.TODO(), bson.M{"address": *address}).Decode(&result)
+	cursor, err := collection.Find(context.TODO(), bson.M{"$or": []interface{}{
+		bson.M{"from": address},
+		bson.M{"to": address},
+	}})
 	if err != nil {
 		return nil, err
 	}
-	return result, nil
+	defer cursor.Close(context.TODO())
+	for cursor.Next(context.TODO()) {
+		var v *model.Nep11TransferNotification
+		err := cursor.Decode(&v)
+		if err != nil {
+			return nil, err
+		}
+		results = append(results, v)
+	}
+	return results, nil
 }
 
 func (db *database) Nep11TransferNotificationByTransactionHash(txid *string) (*model.Nep11TransferNotification, error) {

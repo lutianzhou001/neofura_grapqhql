@@ -11,33 +11,30 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-
-
 type BlockRepository interface {
 	BlockByBlockHash(blockhash *string) (*model.Block, error)
 }
 
 type Nep11TransferNotificationRepository interface {
-	Nep11TransfersNotificationsByAddress(address *string) ([]*model.Nep11TransferNotification,error)
-	Nep11TransferNotificationByTransactionHash(txid *string) (*model.Nep11TransferNotification,error)
+	Nep11TransfersNotificationsByAddress(address *string) ([]*model.Nep11TransferNotification, error)
+	Nep11TransferNotificationByTransactionHash(txid *string) (*model.Nep11TransferNotification, error)
 }
 
 type ScCallRepository interface {
-	ScCallsByContractHash(contracthash *string) (*model.ScCall,error)
-	ScCallsByContractHashAddress(contracthash *string, address *string) (*model.ScCall,error)
+	ScCallsByContractHashAddress(contracthash *string, address *string) ([]*model.ScCall, error)
 }
 
-type ScVoteCallsRepository interface {
-	ScVoteCallsByContractHash(contracthash *string) (*model.ScVoteCall,error)
-	ScVoteCallsByVoterAddress(voteraddress *string) (*model.ScVoteCall,error)
-	ScVoteCallsByCandidateAddress(candidateaddress *string) (*model.ScVoteCall,error)
+type ScVoteCallRepository interface {
+	ScVoteCallByTransactionHash(transactionhash *string) ([]*model.ScVoteCall, error)
+	ScVoteCallsByVoterAddress(voteraddress *string) ([]*model.ScVoteCall, error)
+	ScVoteCallsByCandidateAddress(candidateaddress *string) ([]*model.ScVoteCall, error)
 }
 
 type database struct {
 	client *mongo.Client
 }
 
-func getCollection(db *database)  *mongo.Collection {
+func getCollection(db *database) *mongo.Collection {
 	return db.client.Database("neo").Collection("Block")
 }
 
@@ -83,40 +80,22 @@ func NewNep11TransferNotificationRepository() Nep11TransferNotificationRepositor
 	}
 }
 
-func (db *database) FindOne(params *model.Params) (*model.Block, error) {
-	var result *model.Block
-	collection := db.client.Database("neo").Collection("Block")
-	err := collection.FindOne(context.TODO(), params.Limit).Decode(&result)
+func NewScVoteCallRepository() ScVoteCallRepository {
+	uc, err := getConnection()
 	if err != nil {
-		return nil, err
+		log.Fatal(err)
 	}
-	return result, nil
+	return &database{
+		client: uc,
+	}
 }
 
-func (db *database) FindSome(params *model.Params) ([]*model.Block, error) {
-	var results []*model.Block
-	collection := db.client.Database("neo").Collection("Block")
-	op := options.Find()
-	op.SetSort(params.Sort)
-	op.SetLimit(int64(*params.Limit))
-	op.SetSkip(int64(*params.Skip))
-	co := options.CountOptions{}
-	_, err := collection.CountDocuments(context.TODO(), *params, &co)
+func NewScCallRepository() ScCallRepository {
+	uc, err := getConnection()
 	if err != nil {
-		return nil, err
+		log.Fatal(err)
 	}
-	cursor, err := collection.Find(context.TODO(), params.Filter, op)
-	if err != nil {
-		return nil, err
+	return &database{
+		client: uc,
 	}
-	defer cursor.Close(context.TODO())
-	for cursor.Next(context.TODO()) {
-		var v *model.Block
-		err := cursor.Decode(&v)
-		if err != nil {
-			log.Fatal(err)
-		}
-		results = append(results, v)
-	}
-	return results, nil
 }

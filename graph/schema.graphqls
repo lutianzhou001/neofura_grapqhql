@@ -19,11 +19,10 @@ type Query {
   nep11TransferNotificationsByAddress(address: String): [Nep11TransferNotification]
   nep11TransferNotificationByTransactionHash(transactionhash: String): Nep11TransferNotification
 
-  scCallsByContractHash(contracthash: String): [ScCall]
   scCallsByContractHashAddress(contracthash: String, address:String): [ScCall]
 
-  scVoteCallsByContractHash(contracthash: String): [ScVoteCall]
-  scVoteCallsByVoterAdresss(voteraddress: String): [ScVoteCall]
+  scVoteCallByTransactionHash(transactionhash: String): [ScVoteCall]
+  scVoteCallsByVoterAddress(voteraddress: String): [ScVoteCall]
   scVoteCallsByCandidateAddress(candidateaddress: String): [ScVoteCall]
 
   scVoteCall: ScVoteCall
